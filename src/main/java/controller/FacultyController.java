@@ -1,23 +1,31 @@
-package controller;
+package ru.hogwarts.school.homework29.controller;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.homework29.model.Faculty;
+import ru.hogwarts.school.homework29.model.Student;
 import ru.hogwarts.school.homework29.service.FacultyService;
+
 import java.util.Collection;
 import java.util.Collections;
+
 @RequestMapping(path = "/faculty")
 @RestController
 public class FacultyController {
+
     private final FacultyService service;
+
     public FacultyController(FacultyService service) {
         this.service = service;
     }
+
     @PostMapping
     public ResponseEntity<Faculty> create(@RequestBody Faculty faculty) {
-        Faculty createStudent = service.create(faculty);
-        return ResponseEntity.ok(createStudent);
+        Faculty createFaculty = service.create(faculty);
+        return ResponseEntity.ok(createFaculty);
     }
+
     @GetMapping ("{id}")
     public ResponseEntity<Faculty> get(@PathVariable Long id) {
         Faculty getFaculty = service.get(id);
@@ -26,6 +34,7 @@ public class FacultyController {
         }
         return ResponseEntity.ok(getFaculty);
     }
+
     @PutMapping
     public ResponseEntity<Faculty> update(@RequestBody Faculty faculty) {
         Faculty updateFaculty = service.update(faculty);
@@ -35,16 +44,16 @@ public class FacultyController {
         return ResponseEntity.ok(updateFaculty);
 
     }
+
     @DeleteMapping ("{id}")
     public ResponseEntity<Faculty> delate(@PathVariable Long id) {
-        Faculty delateFuculty = service.delete(id);
-        return ResponseEntity.ok(delateFuculty);
+        service.delete(id);
+        return ResponseEntity.ok().build();
     }
+
     @GetMapping
-    public ResponseEntity<Collection<Faculty>> findFaculties(@RequestParam(required = false) String color) {
-        if (color != null && !color.isBlank()) {
-            return ResponseEntity.ok(service.findByColor(color));
-        }
-        return ResponseEntity.ok(Collections.emptyList());
+    public ResponseEntity<Collection<Faculty>> findFaculties(@RequestParam(required = false) String name, @RequestParam(required = false) String color) {
+        return ResponseEntity.ok(service.findByNameOrColor(name, color));
+
     }
 }
